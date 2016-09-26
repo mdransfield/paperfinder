@@ -65,8 +65,23 @@ let $config := admin:http-server-create(
 	$config, 
 	$groupId, 
 	"pf-http",
-	"C:\users\mdransfield\github\paperfinder\pages\",
+	"C:\users\mdransfi\github\paperfinder\pages\",
 	9000,
 	"file-system",
 	admin:database-get-id($config, "pf-db"))
+return admin:save-configuration($config)
+
+
+;
+
+
+(: Assign url rewrite :)
+
+xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+
+let $config := admin:get-configuration()
+let $groupid := admin:group-get-id($config, "Default")
+let $config := admin:appserver-set-url-rewriter($config, admin:appserver-get-id($config, $groupid, "pf-http"), "url-rewrites.xml")
 return admin:save-configuration($config)

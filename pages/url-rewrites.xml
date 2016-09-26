@@ -1,0 +1,5 @@
+<rewriter xmlns="http://marklogic.com/xdmp/rewriter" >
+  <match-path matches="^/register" scoped="true">
+    <dispatch>register.xqy</dispatch>
+  </match-path>
+</rewriter>
