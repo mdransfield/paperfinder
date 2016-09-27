@@ -2,7 +2,12 @@
   <match-path matches="^/login" scoped="true">
     <dispatch>login.xqy</dispatch>
   </match-path>
+
   <match-path matches="^/register" scoped="true">
     <dispatch>register.xqy</dispatch>
+  </match-path>
+
+  <match-path matches="^/home" scoped="true">
+    <dispatch>home.xqy</dispatch>
   </match-path>
 </rewriter>
