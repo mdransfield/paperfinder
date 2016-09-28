@@ -11,7 +11,7 @@ declare variable $user := doc(concat("/users/",xdmp:user($username),"/user.xml")
 
 declare function local:record-feed($feedurl as xs:string)
 {
-  if ($user) then xdmp:node-insert-child($user/u:user/u:feeds, <u:feed>{$feedurl}</u:feed>)
+  if ($user) then xdmp:node-insert-child($user/u:user/u:feeds, <u:feed added="{current-dateTime()}">{$feedurl}</u:feed>)
   else xdmp:log("$user empty")
 };
 
