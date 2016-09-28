@@ -1,10 +1,17 @@
 xquery version "1.0-ml";
 
 declare namespace u="urn:mdransfield:pf:users";
+declare namespace rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace rss="http://purl.org/rss/1.0/";
 
 declare variable $max-feeds-to-show := 5;
 
 declare variable $user := xdmp:get-request-username();
+
+declare function local:feed-title($feed as element(u:feed)) as xs:string
+{
+  string(doc(string($feed))/rdf:RDF/rss:channel/rss:title)
+};
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -24,7 +31,7 @@ declare variable $user := xdmp:get-request-username();
 	  (<ul>
 	  {
 	    for $f in $u/u:user/u:feeds/u:feed[1 to $max-feeds-to-show]
-	    return <li>{string($f)}</li>
+	    return <li><a href="/feed/{string($f)}">{local:feed-title($f)}</a></li>
 	  }
 	  </ul>,
 	  if (count($u/u:user/u:feeds/u:feed) > $max-feeds-to-show) then
