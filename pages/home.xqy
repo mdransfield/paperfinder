@@ -20,7 +20,16 @@ declare function local:feed-title($feed as element(u:feed)) as xs:string
   <body>
     <h1>{$user} home</h1>
     <section id="searches">
-      <h2>Active searches</h2>
+      <section id="new-search">
+        <h2>New search</h2>
+        <form name="add-feed-form" method="POST" action="/add-search">
+          <input name="terms" type="url" size="100" placeholder="Enter search term ..."/>
+          <button name="add" type="submit">Create search</button>
+        </form>
+      </section>
+      <section id="existing-searches">
+        <h2>Existing searches</h2>
+      </section>
     </section>
     <section id="admin">
       <p><a href="/all-feeds">Show all feeds</a></p>
