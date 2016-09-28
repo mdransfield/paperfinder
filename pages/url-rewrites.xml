@@ -10,4 +10,8 @@
   <match-path matches="^/home" scoped="true">
     <dispatch>home.xqy</dispatch>
   </match-path>
+
+  <match-path matches="^/add-feed" scoped="true">
+    <dispatch>add-feed.xqy</dispatch>
+  </match-path>
 </rewriter>

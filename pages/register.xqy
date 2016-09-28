@@ -32,7 +32,10 @@ else
 		  <feeds/>
 		  <searches/>
 		</user>,
-		xdmp:default-permissions(),
+		(xdmp:permission('pf-user', 'execute'),
+		 xdmp:permission('pf-user', 'read'),
+		 xdmp:permission('pf-user', 'insert'),
+		 xdmp:permission('pf-user', 'update')),
 		"users")
 	return xdmp:redirect-response("/home")
   }
