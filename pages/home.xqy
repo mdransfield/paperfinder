@@ -22,26 +22,8 @@ declare function local:feed-title($feed as element(u:feed)) as xs:string
     <section id="searches">
       <h2>Active searches</h2>
     </section>
-    <section id="feeds">
-      <h2>Recently added feeds</h2>
-      {
-	let $u := doc(concat("/users/",xdmp:user($user),"/user.xml"))	
-	where ($u/u:user/u:feeds/u:feed)
-	return 
-	  (<ul>
-	  {
-	    for $f in (for $i in $u/u:user/u:feeds/u:feed order by $i/@added descending return $i)[1 to $max-feeds-to-show]
-	    return <li><a href="/feed/{string($f)}">{local:feed-title($f)}</a></li>
-	  }
-	  </ul>,
-	  if (count($u/u:user/u:feeds/u:feed) > $max-feeds-to-show) then
-	    <p><a href="/all-feeds">Show all feeds</a></p>
-	  else ())
-      }
-      <form name="add-feed-form" method="POST" action="/add-feed">
-        <input name="feed" type="url" size="100" placeholder="Enter new feed URL ..."/>
-        <button name="add" type="submit">Add feed</button>
-      </form>
+    <section id="admin">
+      <p><a href="/all-feeds">Show all feeds</a></p>
     </section>
   </body>
 </html>

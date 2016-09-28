@@ -8,9 +8,9 @@ declare variable $max-feeds-to-show := 5;
 
 declare variable $user := xdmp:get-request-username();
 
-declare function local:feed-title($feed as element(u:feed)) as xs:string
+declare function local:feed-title($feed) as xs:string
 {
-  string(doc(string($feed))/rdf:RDF/rss:channel/rss:title)
+  string($feed/rdf:RDF/rss:channel/rss:title)
 };
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -18,18 +18,20 @@ declare function local:feed-title($feed as element(u:feed)) as xs:string
     <title>PaperFind: feeds [{$user}]</title>
   </head>
   <body>
-    <h1>{$user} feeds</h1>
+    <h1>Feeds</h1>
     <section id="feeds">
-    {
-      let $u := doc(concat("/users/",xdmp:user($user),"/user.xml"))	
-      return
-	<ul>
-	{
-	  for $f in (for $i in $u/u:user/u:feeds/u:feed order by $i/@added descending return $i)
-	  return <li><a href="/feed/{string($f)}">{local:feed-title($f)}</a></li>
-	}
-	</ul>
-    }
+      <h2>Add new feed</h2>
+      <form name="add-feed-form" method="POST" action="/add-feed">
+        <input name="feed" type="url" size="100" placeholder="Enter new feed URL ..."/>
+        <button name="add" type="submit">Add feed</button>
+      </form>
+      <h2>Existing feeds</h2>
+      <ol>
+      {
+        for $f in collection("feeds")
+        return <li><a href="/feed/{string($f)}">{local:feed-title($f)}</a></li>
+      }
+      </ol>
     </section>
   </body>
 </html>

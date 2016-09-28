@@ -29,7 +29,6 @@ else
 	let $record := xdmp:document-insert(concat("/users/",$newuser,"/user.xml"),
 		<user xmlns="urn:mdransfield:pf:users">
 		  <id>{$newuser}</id>
-		  <feeds/>
 		  <searches/>
 		</user>,
 		(xdmp:permission('pf-user', 'execute'),
