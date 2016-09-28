@@ -20,7 +20,7 @@ else
                 declare variable $username as xs:string external;
                 declare variable $password as xs:string external;
 
-	        sec:create-user($username, "pf-user", $password, (), (), ())',
+	        sec:create-user($username, "pf user", $password, "pf-user", (), ())',
 		(xs:QName("username"), $username, xs:QName("password"), $password),
 		<options xmlns="xdmp:eval">
 		  <database>{xdmp:security-database()}</database>

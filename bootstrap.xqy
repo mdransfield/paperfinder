@@ -95,3 +95,44 @@ let $config := admin:appserver-set-default-user($config, $appsrvid, xdmp:eval('
 					      	 <database>{xdmp:security-database()}</database>
 					      </options>))
 return admin:save-configuration($config)
+
+
+;
+
+
+(: Create user role; assign privileges and permissions :)
+
+xquery version "1.0-ml";
+
+declare function local:run-in-sec-db($code as xs:string*){
+   xdmp:eval(
+    $code
+    , ()
+    ,<options xmlns="xdmp:eval"><database>{ xdmp:security-database() }</database></options>
+    )
+};
+
+local:run-in-sec-db(
+  "import module namespace sec = 'http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+   sec:create-role('pf-user','Role given to pf users', (), (), ())"
+)
+,local:run-in-sec-db(
+  "import module namespace sec = 'http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+   sec:role-set-default-permissions('pf-user',
+     (
+     xdmp:permission('pf-user', 'execute'),
+     xdmp:permission('pf-user', 'read'),
+     xdmp:permission('pf-user', 'insert'),
+     xdmp:permission('pf-user', 'update')
+     )
+   )")
+,local:run-in-sec-db(
+  "import module namespace sec = 'http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+   sec:privilege-set-roles('http://marklogic.com/xdmp/privileges/xdmp-http-get','execute',('pf-user'))")
+,local:run-in-sec-db(
+  "import module namespace sec = 'http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+   sec:privilege-set-roles('http://marklogic.com/xdmp/privileges/any-uri','execute',('pf-user'))")
+,local:run-in-sec-db(
+  "import module namespace sec = 'http://marklogic.com/xdmp/security' at '/MarkLogic/security.xqy';
+   sec:privilege-set-roles('http://marklogic.com/xdmp/privileges/any-collection','execute',('pf-user'))")
+

@@ -4,7 +4,7 @@ declare variable $user := xdmp:get-request-username();
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>PaperFind: {$user} home</title>
+    <title>PaperFind: home [{$user}]</title>
   </head>
   <body>
     <h1>{$user} home</h1>
