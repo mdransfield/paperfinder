@@ -14,4 +14,8 @@
   <match-path matches="^/add-feed" scoped="true">
     <dispatch>add-feed.xqy</dispatch>
   </match-path>
+
+  <match-path matches="^/all-feeds" scoped="true">
+    <dispatch>all-feeds.xqy</dispatch>
+  </match-path>
 </rewriter>

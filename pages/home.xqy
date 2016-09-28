@@ -23,14 +23,14 @@ declare function local:feed-title($feed as element(u:feed)) as xs:string
       <h2>Active searches</h2>
     </section>
     <section id="feeds">
-      <h2>Feeds</h2>
+      <h2>Recently added feeds</h2>
       {
 	let $u := doc(concat("/users/",xdmp:user($user),"/user.xml"))	
 	where ($u/u:user/u:feeds/u:feed)
 	return 
 	  (<ul>
 	  {
-	    for $f in $u/u:user/u:feeds/u:feed[1 to $max-feeds-to-show]
+	    for $f in (for $i in $u/u:user/u:feeds/u:feed order by $i/@added descending return $i)[1 to $max-feeds-to-show]
 	    return <li><a href="/feed/{string($f)}">{local:feed-title($f)}</a></li>
 	  }
 	  </ul>,
