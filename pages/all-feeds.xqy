@@ -29,7 +29,7 @@ declare function local:feed-title($feed) as xs:string
       <ol>
       {
         for $f in collection("feeds")
-        return <li><a href="/feed/{string($f)}">{local:feed-title($f)}</a></li>
+        return <li><a href="/feed/{xdmp:node-uri($f)}">{local:feed-title($f)}</a></li>
       }
       </ol>
     </section>
