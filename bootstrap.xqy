@@ -7,14 +7,8 @@ xquery version "1.0-ml";
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 let $config := admin:get-configuration()
-
-(: create forest :)
 let $config := admin:forest-create($config, "pf-forest", xdmp:host(), ())
-
-(: create db :)
 let $config := admin:database-create($config, "pf-db", xdmp:database("Security"), xdmp:database("Schemas"))
-
-(: save config :)
 return admin:save-configuration($config)
 
 
@@ -28,30 +22,26 @@ xquery version "1.0-ml";
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 let $config := admin:get-configuration()
-
-(: attach forest to db :)
 let $config := admin:database-attach-forest($config, xdmp:database("pf-db"), xdmp:forest("pf-forest"))
-
-(: save config :)
 return admin:save-configuration($config)
 
 
 ;
 
 
-(: Create users and roles :)
-(:
+(: Create fragment roots for feeds :)
+
 xquery version "1.0-ml";
 
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 let $config := admin:get-configuration()
-
-
+let $config := admin:database-add-fragment-root($config, xdmp:database("pf-db"), admin:database-fragment-root("http://purl.org/rss/1.0/", "item"))
+return admin:save-configuration($config)
 
 
 ;
-:)
+
 
 (: Create app server :)
 
@@ -75,7 +65,7 @@ return admin:save-configuration($config)
 ;
 
 
-(:Configure app server :)
+(: Configure app server :)
 
 xquery version "1.0-ml";
 
