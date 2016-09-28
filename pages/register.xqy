@@ -31,7 +31,9 @@ else
 		  <id>{$newuser}</id>
 		  <feeds/>
 		  <searches/>
-		</user>)
+		</user>,
+		xdmp:default-permissions(),
+		"users")
 	return xdmp:redirect-response("/home")
   }
   catch ($exception) {
