@@ -18,4 +18,8 @@
   <match-path matches="^/all-feeds" scoped="true">
     <dispatch>all-feeds.xqy</dispatch>
   </match-path>
+
+  <match-path matches="^/add-search" scoped="true">
+    <dispatch>add-search.xqy</dispatch>
+  </match-path>
 </rewriter>
