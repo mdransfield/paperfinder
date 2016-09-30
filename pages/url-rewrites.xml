@@ -22,4 +22,9 @@
   <match-path matches="^/add-search" scoped="true">
     <dispatch>add-search.xqy</dispatch>
   </match-path>
+
+  <match-path matches="^/results/(.+)" scoped="true">
+    <add-query-param name="search">$1</add-query-param>
+    <dispatch>results.xqy</dispatch>
+  </match-path>
 </rewriter>
