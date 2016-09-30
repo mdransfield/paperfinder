@@ -73,6 +73,40 @@ return admin:save-configuration($frgadd)
 ;
 
 
+(: Add range indexes :)
+
+xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/Marklogic/admin.xqy";
+
+declare namespace db = "http://marklogic.com/xdmp/database";
+
+declare function local:element-range-index-exists(
+	$config as element(configuration),
+	$databaseId as xs:unsignedLong,
+	$namespaceuri as xs:string,
+	$localname as xs:string) as xs:boolean
+{
+  if (for $ri in admin:database-get-range-element-indexes($config, $databaseId)
+    where $ri/db:range-element-index/db:namespace-uri eq $namespaceuri and $ri/db:range-element-index/db:localname eq $localname
+    return $ri) then true()
+  else
+    false()
+};
+
+let $config := admin:get-configuration()
+let $dbid   := xdmp:database("pf-db")
+let $nsuri  := "http://purl.org/dc/elements/1.1/"
+let $lname  := "date"
+let $rngidx := if (not(local:element-range-index-exists($config, $dbid, $nsuri, $lname))) then
+                 admin:database-add-range-element-index($config, $dbid, admin:database-range-element-index("dateTime", $nsuri, $lname, "", false()))
+               else $config
+return admin:save-configuration($rngidx)
+
+
+;
+
+
 (: Create app server :)
 
 xquery version "1.0-ml";
