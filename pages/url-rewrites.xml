@@ -1,4 +1,8 @@
 <rewriter xmlns="http://marklogic.com/xdmp/rewriter" >
+  <match-path matches="^/?" scoped="true">
+    <dispatch>pages/index.xqy</dispatch>
+  </match-path>
+
   <match-path matches="^/login" scoped="true">
     <dispatch>pages/login.xqy</dispatch>
   </match-path>
