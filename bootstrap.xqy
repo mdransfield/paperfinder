@@ -77,7 +77,7 @@ return admin:save-configuration($frgadd)
 
 xquery version "1.0-ml";
 
-import module namespace admin = "http://marklogic.com/xdmp/admin" at "/Marklogic/admin.xqy";
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 declare namespace db = "http://marklogic.com/xdmp/database";
 
@@ -121,9 +121,9 @@ let $appserv := if (not(admin:appserver-exists($config, $groupId, "pf-http"))) t
 	            $groupId, 
 	            "pf-http",
 	            (if (xdmp:platform() eq "winnt") then
-		       "C:\users\mdransfi\github\paperfinder\pages\"
+		       "C:\users\mdransfi\github\paperfinder\"
 		     else
-		       "/home/mdransfield/stuff/paperfinder/pages/"
+		       "/home/mdransfield/stuff/paperfinder/"
 	            ),
 	            9000,
 	            "file-system",
@@ -145,8 +145,8 @@ import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic
 let $config  := admin:get-configuration()
 let $groupid := admin:group-get-id($config, "Default")
 let $appsrvid := admin:appserver-get-id($config, $groupid, "pf-http")
-let $urlrwrt := if (admin:appserver-get-url-rewriter($config, $appsrvid) ne "url-rewrites.xml") then
-                  admin:appserver-set-url-rewriter($config, $appsrvid, "url-rewrites.xml")
+let $urlrwrt := if (admin:appserver-get-url-rewriter($config, $appsrvid) ne "page/url-rewrites.xml") then
+                  admin:appserver-set-url-rewriter($config, $appsrvid, "pages/url-rewrites.xml")
                 else
                   $config
 let $authnt  := admin:appserver-set-authentication($config, $appsrvid, "application-level")
@@ -159,6 +159,35 @@ let $dfltusr := admin:appserver-set-default-user($config, $appsrvid, xdmp:eval('
 					      	 <database>{xdmp:security-database()}</database>
 					      </options>))
 return admin:save-configuration($dfltusr)
+
+
+;
+
+
+(: Create scheduled task to update feeds :)
+
+xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+
+let $config  := admin:get-configuration()
+let $groupid := admin:group-get-id($config, "Default")
+let $task    := admin:group-daily-scheduled-task(
+		  "/update-feeds.xqy",
+		  (if (xdmp:platform() eq "winnt") then
+		     "C:\users\mdransfi\github\paperfinder\Modules\scheduled"
+		   else
+		     "/home/mdransfield/stuff/paperfinder/scheduled"
+	          ),
+		  1,
+		  xs:time("00:00:00"),
+		  xdmp:database("pf-db"),
+		  0,
+		  xdmp:user("admin"),
+		  ()
+    	     	)
+let $schedule := admin:group-add-scheduled-task($config, $groupid, $task)
+return admin:save-configuration($schedule)
 
 
 ;
