@@ -32,4 +32,8 @@
     <add-query-param name="search">$1</add-query-param>
     <dispatch>pages/results.xqy</dispatch>
   </match-path>
+
+  <match-path matches="^/update-feeds" scoped="true">
+    <dispatch>pages/update-feeds.xqy</dispatch>
+  </match-path>
 </rewriter>
