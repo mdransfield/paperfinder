@@ -4,7 +4,6 @@ declare variable $username := xdmp:get-request-field("username");
 declare variable $password := xdmp:get-request-field("password");
 declare variable $confirmn := xdmp:get-request-field("confirmation");
 
-
 if ($username eq '') then
 xdmp:redirect-response("/?e=1")
 else if ($password eq '') then
