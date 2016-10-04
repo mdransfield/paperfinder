@@ -38,5 +38,8 @@ declare function local:feed-title($feed) as xs:string
       }
       </ol>
     </section>
+    <section id="update">
+      <p><a href="/update-feeds">Update all feeds</a></p>
+    </section>
   </body>
 </html>
