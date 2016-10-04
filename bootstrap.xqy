@@ -7,14 +7,8 @@ xquery version "1.0-ml";
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 let $config := admin:get-configuration()
-let $forest := if (not(admin:forest-exists($config, "pf-forest"))) then
-                 admin:forest-create($config, "pf-forest", xdmp:host(), ())
-               else
-                 $config
-let $db     := if (not(admin:database-exists($config, "pf-db"))) then
-                 admin:database-create($config, "pf-db", xdmp:database("Security"), xdmp:database("Schemas"))
-               else
-                 $forest
+let $forest := admin:forest-create($config, "pf-forest", xdmp:host(), ())
+let $db     := admin:database-create($forest, "pf-db", xdmp:database("Security"), xdmp:database("Schemas"))
 return admin:save-configuration($db)
 
 
@@ -30,10 +24,7 @@ import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic
 let $config := admin:get-configuration()
 let $db     := xdmp:database("pf-db")
 let $forest := xdmp:forest("pf-forest")
-let $attach := if (admin:database-get-attached-forests($config, $db) != $forest) then
-                 admin:database-attach-forest($config, $db, $forest)
-               else
-                 $config
+let $attach := admin:database-attach-forest($config, $db, $forest)
 return admin:save-configuration($attach)
 
 
@@ -48,25 +39,10 @@ import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic
 
 declare namespace db = "http://marklogic.com/xdmp/database";
 
-(: this is crazy but there's no easy way of telling if a fragment root already exists in a db :)
-declare function local:fragment-root-exists(
-	$config as element(configuration),
-	$databaseId as xs:unsignedLong,
-	$fragmentRoot as element(db:fragment-root)) as xs:boolean
-{
-  let $exrts  := admin:database-get-fragment-roots($config, $databaseId)
-  let $exnss  := for $f in $exrts return string($f/db:namespace-uri)
-  let $exlns  := for $f in $exrts return string($f/db:localname)
-  return ($exnss = $fragmentRoot/db:namespace-uri and $exlns = $fragmentRoot/db:localname)
-};
-
 let $config := admin:get-configuration()
-let $fragrt := admin:database-fragment-root("http://purl.org/rss/1.0/", "item")
 let $db     := xdmp:database("pf-db")
-let $frgadd := if (not(local:fragment-root-exists($config, $db, $fragrt))) then
-                 admin:database-add-fragment-root($config, $db, $fragrt)
-               else 
-                 $config
+let $fragrt := admin:database-fragment-root("http://purl.org/rss/1.0/", "item")
+let $frgadd := admin:database-add-fragment-root($config, $db, $fragrt)
 return admin:save-configuration($frgadd)
 
 
@@ -81,26 +57,11 @@ import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic
 
 declare namespace db = "http://marklogic.com/xdmp/database";
 
-declare function local:element-range-index-exists(
-	$config as element(configuration),
-	$databaseId as xs:unsignedLong,
-	$namespaceuri as xs:string,
-	$localname as xs:string) as xs:boolean
-{
-  if (for $ri in admin:database-get-range-element-indexes($config, $databaseId)
-    where $ri/db:range-element-index/db:namespace-uri eq $namespaceuri and $ri/db:range-element-index/db:localname eq $localname
-    return $ri) then true()
-  else
-    false()
-};
-
 let $config := admin:get-configuration()
-let $dbid   := xdmp:database("pf-db")
+let $db     := xdmp:database("pf-db")
 let $nsuri  := "http://purl.org/dc/elements/1.1/"
 let $lname  := "date"
-let $rngidx := if (not(local:element-range-index-exists($config, $dbid, $nsuri, $lname))) then
-                 admin:database-add-range-element-index($config, $dbid, admin:database-range-element-index("dateTime", $nsuri, $lname, "", false()))
-               else $config
+let $rngidx := admin:database-add-range-element-index($config, $db, admin:database-range-element-index("dateTime", $nsuri, $lname, "", false()))
 return admin:save-configuration($rngidx)
 
 
@@ -114,11 +75,11 @@ xquery version "1.0-ml";
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 let $config  := admin:get-configuration()
-let $groupId := admin:group-get-id($config, "Default")
-let $appserv := if (not(admin:appserver-exists($config, $groupId, "pf-http"))) then
+let $group   := admin:group-get-id($config, "Default")
+let $appserv := if (not(admin:appserver-exists($config, $group, "pf-http"))) then
                   admin:http-server-create(
 	            $config, 
-	            $groupId, 
+	            $group, 
 	            "pf-http",
 	            (if (xdmp:platform() eq "winnt") then
 		       "C:\users\mdransfi\github\paperfinder\"
@@ -143,21 +104,18 @@ xquery version "1.0-ml";
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
 let $config  := admin:get-configuration()
-let $groupid := admin:group-get-id($config, "Default")
-let $appsrvid := admin:appserver-get-id($config, $groupid, "pf-http")
-let $urlrwrt := if (admin:appserver-get-url-rewriter($config, $appsrvid) ne "page/url-rewrites.xml") then
-                  admin:appserver-set-url-rewriter($config, $appsrvid, "pages/url-rewrites.xml")
-                else
-                  $config
-let $authnt  := admin:appserver-set-authentication($config, $appsrvid, "application-level")
-let $dfltusr := admin:appserver-set-default-user($config, $appsrvid, xdmp:eval('
+let $group   := admin:group-get-id($config, "Default")
+let $appsrv  := admin:appserver-get-id($config, $group, "pf-http")
+let $urlrwrt := admin:appserver-set-url-rewriter($config, $appsrv, "pages/url-rewrites.xml")
+let $authnt  := admin:appserver-set-authentication($urlrwrt, $appsrv, "application-level")
+let $dfltusr := admin:appserver-set-default-user($authnt, $appsrv, xdmp:eval('
     	          xquery version "1.0-ml";
                   import module "http://marklogic.com/xdmp/security" at "/MarkLogic/security.xqy"; 
 
-	          sec:uid-for-name("admin")', (),  
-		  			      <options xmlns="xdmp:eval">
-					      	 <database>{xdmp:security-database()}</database>
-					      </options>))
+	          sec:uid-for-name("admin")', (),
+		  <options xmlns="xdmp:eval">
+		    <database>{xdmp:security-database()}</database>
+		  </options>))
 return admin:save-configuration($dfltusr)
 
 
@@ -170,23 +128,23 @@ xquery version "1.0-ml";
 
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
 
-let $config  := admin:get-configuration()
-let $groupid := admin:group-get-id($config, "Default")
-let $task    := admin:group-daily-scheduled-task(
-		  "/update-feeds.xqy",
-		  (if (xdmp:platform() eq "winnt") then
-		     "C:\users\mdransfi\github\paperfinder\Modules\scheduled"
-		   else
-		     "/home/mdransfield/stuff/paperfinder/scheduled"
-	          ),
-		  1,
-		  xs:time("00:00:00"),
-		  xdmp:database("pf-db"),
-		  0,
-		  xdmp:user("admin"),
-		  ()
+let $config := admin:get-configuration()
+let $group  := admin:group-get-id($config, "Default")
+let $task   := admin:group-daily-scheduled-task(
+	         "/update-feeds.xqy",
+		 (if (xdmp:platform() eq "winnt") then
+	            "C:\users\mdransfi\github\paperfinder\scheduled"
+		  else
+		    "/home/mdransfield/stuff/paperfinder/scheduled"
+	         ),
+		 1,
+		 xs:time("00:00:00"),
+		 xdmp:database("pf-db"),
+		 0,
+		 xdmp:user("admin"),
+		 ()
     	     	)
-let $schedule := admin:group-add-scheduled-task($config, $groupid, $task)
+let $schedule := admin:group-add-scheduled-task($config, $group, $task)
 return admin:save-configuration($schedule)
 
 
