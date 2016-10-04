@@ -12,20 +12,23 @@ declare variable $user     := doc(concat("/users/",xdmp:user($username),"/user.x
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>PaperFind: home [{$username}]</title>
+    <title>Paper Finder: home [{$username}]</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya:400,400i|Alegreya+Sans"/>
+    <link rel="stylesheet" href="static/pf.css" type="text/css"/>
   </head>
   <body>
-    <h1>{$username} home</h1>
+    <h1><a href="/">Paper Finder</a></h1>
+    <h2>{$username} home</h2>
     <section id="searches">
       <section id="new-search">
-        <h2>New search</h2>
+        <h3>New search</h3>
         <form name="add-feed-form" method="POST" action="/add-search">
           <input name="terms" type="search" size="100" placeholder="Enter search term ..."/>
           <button name="add" type="submit">Create search</button>
         </form>
       </section>
       <section id="existing-searches">
-        <h2>Existing searches</h2>
+        <h3>Existing searches</h3>
         {
 	  if ($user/u:user/u:searches/u:search) then
 	    <ol>

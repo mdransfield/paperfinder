@@ -1,0 +1,30 @@
+
+body { font-family: 'Alegreya Sans', sans-serif;
+       font-size: 14pt;
+     }
+
+h1   { font-family: "Alegreya", serif;
+       font-style:  italic;
+       font-weight: 400;
+       font-size: 36pt;
+       background-color: #90C3D4;
+       padding: 0.25em;
+       border-width: ;
+       border: 1pt solid black;
+     }
+
+h2   { font-size: 30pt; }
+
+h3   { font-size: 24pt; }
+
+.error { font-size: 10pt;
+	 font-weight: bold;
+	 color: #DE0909;
+	 margin-bottom: 0.5em;
+       }
+
+.result { margin-bottom: 0.5em;
+	}
+
+.journal-title { font-style: italic;
+	       }

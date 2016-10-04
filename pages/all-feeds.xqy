@@ -15,17 +15,22 @@ declare function local:feed-title($feed) as xs:string
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>PaperFind: feeds [{$user}]</title>
+    <title>Paper Finder: feeds</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya:400,400i|Alegreya+Sans"/>
+    <link rel="stylesheet" href="static/pf.css" type="text/css"/>
   </head>
   <body>
-    <h1>Feeds</h1>
-    <section id="feeds">
-      <h2>Add new feed</h2>
+    <h1><a href="/">Paper Finder</a></h1>
+    <h2>Feeds</h2>
+    <section id="add">
+      <h3>Add new feed</h3>
       <form name="add-feed-form" method="POST" action="/add-feed">
         <input name="feed" type="url" size="100" placeholder="Enter new feed URL ..."/>
         <button name="add" type="submit">Add feed</button>
       </form>
-      <h2>Existing feeds</h2>
+    </section>
+    <section id="existing">
+      <h3>Existing feeds</h3>
       <ol>
       {
         for $f in collection("feeds")

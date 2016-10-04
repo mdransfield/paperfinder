@@ -11,11 +11,15 @@ declare variable $search   := $user/u:user/u:searches/u:search[@id eq $searchid]
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-<title>PaperFind: search results [{$search/string(u:terms)}]</title>
+    <title>Paper Finder: search results [{$search/string(u:terms)}]</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alegreya:400,400i|Alegreya+Sans"/>
+    <link rel="stylesheet" href="/static/pf.css" type="text/css"/>
   </head>
   <body>
-    <h1>Search results for "{$search/string(u:terms)}"</h1>
-    {
+    <h1><a href="/">Paper Finder</a></h1>
+    <section id="results">
+      <h2>Search results for "{$search/string(u:terms)}"</h2>
+      {
       let $results := cts:search(//rss:item, cts:and-query((
 				cts:word-query($search/string(u:terms)),
 				cts:element-range-query(xs:QName("dc:date"), ">", xs:dateTime($search/@last-run)))))
@@ -27,7 +31,8 @@ declare variable $search   := $user/u:user/u:searches/u:search[@id eq $searchid]
 	{
 	  for $i in $results
 		return 
-		  <li><div class="article-title"><a href="{$i/rss:link}">{$i/string(dc:title)}</a></div>
+		  <li class="result">
+		     <div class="article-title"><a href="{$i/rss:link}">{$i/string(dc:title)}</a></div>
 		     <div class="journal-title">{string($i/../rss:channel/rss:title)}</div>
 		     <div class="authors">{string($i/dc:creator)}</div>
 		     <div class="date">{string($i/dc:date)}</div>
@@ -35,5 +40,6 @@ declare variable $search   := $user/u:user/u:searches/u:search[@id eq $searchid]
 	}
 	</ol>
     }
+    </section>
   </body>
 </html>
