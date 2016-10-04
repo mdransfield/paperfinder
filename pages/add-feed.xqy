@@ -4,6 +4,11 @@ xquery version "1.0-ml";
 
 declare namespace h="xdmp:http";
 
+declare variable $perms := (xdmp:permission('pf-user', 'execute'),
+		 	    xdmp:permission('pf-user', 'read'),
+			    xdmp:permission('pf-user', 'insert'),
+			    xdmp:permission('pf-user', 'update'));
+
 declare variable $username := xdmp:get-request-username();
 declare variable $feed := xdmp:get-request-field("feed");
 
@@ -14,6 +19,6 @@ else
 	</options>)
   return if ($get[1]/h:response/h:code ne 200) then
            xdmp:redirect-response("/home?e=1")
-         else let $insert := xdmp:document-insert($feed, $get[2], xdmp:default-permissions(), "feeds")
+         else let $insert := xdmp:document-insert($feed, $get[2], $perms, "feeds")
               return xdmp:redirect-response(concat("/all-feeds"))
 
