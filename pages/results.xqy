@@ -21,6 +21,7 @@ declare variable $search   := $user/u:user/u:searches/u:search[@id eq $searchid]
       <h2>Search results for "{$search/string(u:terms)}"</h2>
       {
       let $results := cts:search(//rss:item, cts:and-query((
+				cts:collection-query("feeds"),
 				cts:word-query($search/string(u:terms)),
 				cts:element-range-query(xs:QName("dc:date"), ">", xs:dateTime($search/@last-run)))))
       (: Update the last-run timestamp so as not repeatedly show the same results :)
@@ -32,7 +33,7 @@ declare variable $search   := $user/u:user/u:searches/u:search[@id eq $searchid]
 	  for $i in $results
 		return 
 		  <li class="result">
-		     <div class="article-title"><a href="{$i/rss:link}">{$i/string(dc:title)}</a></div>
+		     <div class="article-title"><a href="/click/{xdmp:url-encode($i/rss:link)}" target="_blank">{$i/string(dc:title)}</a></div>
 		     <div class="journal-title">{string($i/../rss:channel/rss:title)}</div>
 		     <div class="authors">{string($i/dc:creator)}</div>
 		     <div class="date">{string($i/dc:date)}</div>

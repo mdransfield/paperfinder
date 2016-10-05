@@ -40,4 +40,9 @@
   <match-path matches="^/update-feeds" scoped="true">
     <dispatch>pages/update-feeds.xqy</dispatch>
   </match-path>
+
+  <match-path matches="^/click/(.+)" scoped="true">
+    <add-query-param name="article">$1</add-query-param>
+    <dispatch>pages/click.xqy</dispatch>
+  </match-path>
 </rewriter>
