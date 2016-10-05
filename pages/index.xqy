@@ -10,8 +10,14 @@ declare variable $e := xdmp:get-request-field("e");
   </head>
   <body>
     <h1>Paper Finder</h1>
+    <section id="intro">
+      <h3>Welcome to Paper Finder!</h3>
+      <p>Paper Finder is a simple tool to help you discover new journal articles that interest you.</p>
+      <p>Once logged in you can set up persistent searches for terms and we'll scour RSS feeds from academic journals and show you new papers that match your terms.</p>
+    </section>
     <section id="login">
-      <h3>Login</h3>
+      <h3>Existing user?</h3>
+      <p>Please login</p>
       <form name="login-form" method="POST" action="/login">
         { if ($e eq "5") then <p class="error">Username or password is incorrect</p> else () }
           <input name="username" type="text" size="32" placeholder="Username"/>
@@ -20,7 +26,8 @@ declare variable $e := xdmp:get-request-field("e");
       </form>
     </section>
     <section id="register">
-      <h3>Register</h3>
+      <h3>New User?</h3>
+      <p>Please register</p>
       <form name="register-form" method="POST" action="/register">
         <p>{ if ($e eq "4") then <p class="error">Username is already in use</p> else () }
            { if ($e eq "1") then <div class="error">Username must not be empty</div> else () }
