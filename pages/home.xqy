@@ -1,14 +1,19 @@
 xquery version "1.0-ml";
 
-declare namespace u   ="urn:mdransfield:pf:users";
-declare namespace rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-declare namespace rss ="http://purl.org/rss/1.0/";
-declare namespace dc  ="http://purl.org/dc/elements/1.1/";
+import module namespace sem = "http://marklogic.com/semantics" at "/MarkLogic/semantics.xqy";
+
+declare namespace u   =	"urn:mdransfield:pf:users";
+declare namespace s   = "urn:mdransfield:pf:search";
+declare namespace rdf =	"http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+declare namespace rss =	"http://purl.org/rss/1.0/";
+declare namespace dc  =	"http://purl.org/dc/elements/1.1/";
 
 declare variable $max-feeds-to-show := 5;
 
 declare variable $username := xdmp:get-request-username();
-declare variable $user     := doc(concat("/users/",xdmp:user($username),"/user.xml"));
+declare variable $userid   := xdmp:user($username);
+declare variable $useruri  := concat("urn:mdransfield:pf:users#", xdmp:user($username));
+declare variable $user     := doc($useruri);
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -30,16 +35,20 @@ declare variable $user     := doc(concat("/users/",xdmp:user($username),"/user.x
       <section id="existing-searches">
         <h3>Existing searches</h3>
         {
-	  if ($user/u:user/u:searches/u:search) then
+	  let $searches := sem:triple-object(cts:triples(sem:iri($useruri), sem:iri("urn:mdransfield:pf:created")))
+	  where $searches
+	  return 
 	    <ol>
 	    {
-	      for $s in $user/u:user/u:searches/u:search
+	      for $s in $searches
+	      let $sd := doc(string($s))/s:search
+	      let $terms := $sd/s:terms
 	      let $n := xdmp:estimate(cts:search(//rss:item, cts:and-query((
-				cts:word-query($s/string(u:terms)),
-				cts:element-range-query(xs:QName("dc:date"), ">", xs:dateTime($s/@last-run))
+				cts:word-query(string($terms)),
+				cts:element-range-query(xs:QName("dc:date"), ">", xs:dateTime($sd/@last-run))
 			))))
 	      return <li>
-		       <a href="/results/{$s/@id}">{$s/u:terms}</a>
+		       <a href="/results/{$sd/s:id}">{$terms}</a>
 		       {
 			 if ($n > 0) then
 			   <span class="new-results"> [{$n} new result{if ($n > 1) then 's' else ()}]</span>
@@ -48,8 +57,6 @@ declare variable $user     := doc(concat("/users/",xdmp:user($username),"/user.x
 		     </li>
 	    }
 	    </ol>
-	  else
-	    ()
 	}
       </section>
     </section>

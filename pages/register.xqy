@@ -25,10 +25,9 @@ else
 		  <database>{xdmp:security-database()}</database>
 		</options>)
 	let $login := xdmp:login($username, $password, true())
-	let $record := xdmp:document-insert(concat("/users/",$newuser,"/user.xml"),
+	let $record := xdmp:document-insert(concat("urn:mdransfield:pf:users#", $newuser),
 		<user xmlns="urn:mdransfield:pf:users">
 		  <id>{$newuser}</id>
-		  <searches/>
 		</user>,
 		(xdmp:permission('pf-user', 'execute'),
 		 xdmp:permission('pf-user', 'read'),
