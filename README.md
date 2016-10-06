@@ -8,7 +8,7 @@ The motivation for building this application came from a short twitter exchange 
 
 ## Set up
 
-...
+Currently assumes all modules are on the filesystem. Edit the paths in ./modules/config.xqy to point at the location you want, then run ./bootstrap.xqy to configure everything.
 
 ## Some feeds to try
 
