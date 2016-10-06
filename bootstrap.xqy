@@ -68,6 +68,20 @@ return admin:save-configuration($rngidx)
 ;
 
 
+(: Enable triple index :)
+
+xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+
+let $config := admin:get-configuration()
+let $db     := xdmp:database("pf-db")
+let $trpidx := admin:database-set-triple-index($config, $db, true())
+return admin:save-configuration($trpidx)
+
+;
+
+
 (: Create app server :)
 
 xquery version "1.0-ml";
