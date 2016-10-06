@@ -73,6 +73,7 @@ return admin:save-configuration($rngidx)
 xquery version "1.0-ml";
 
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+import module namespace config = "urn:mdransfield:pf:config" at "modules/config.xqy";
 
 let $config  := admin:get-configuration()
 let $group   := admin:group-get-id($config, "Default")
@@ -81,11 +82,7 @@ let $appserv := if (not(admin:appserver-exists($config, $group, "pf-http"))) the
 	            $config, 
 	            $group, 
 	            "pf-http",
-	            (if (xdmp:platform() eq "winnt") then
-		       "C:\users\mdransfi\github\paperfinder\"
-		     else
-		       "/home/mdransfield/stuff/paperfinder/"
-	            ),
+	            $config:modules-location,
 	            9000,
 	            "file-system",
 	            xdmp:database("pf-db"))
@@ -127,6 +124,7 @@ return admin:save-configuration($dfltusr)
 xquery version "1.0-ml";
 
 import module namespace admin = "http://marklogic.com/xdmp/admin" at "/MarkLogic/admin.xqy";
+import module namespace config = "urn:mdransfield:pf:config" at "modules/config.xqy";
 
 let $config := admin:get-configuration()
 let $group  := admin:group-get-id($config, "Default")
