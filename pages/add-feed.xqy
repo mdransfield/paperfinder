@@ -15,7 +15,8 @@ declare variable $feed := xdmp:get-request-field("feed");
 if ($feed eq '' or doc($feed)) then xdmp:redirect-response("/all-feeds")
 else
   let $get := xdmp:http-get($feed,
-	<options xmlns="xdmp:http">
+	<options xmlns="xdmp:document-get">
+	  <format>xml</format>
 	</options>)
   return if ($get[1]/h:response/h:code ne 200) then
            xdmp:redirect-response("/home?e=1")
