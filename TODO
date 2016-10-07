@@ -1,0 +1,7 @@
+* Stop using admin as the default user.
+
+* Need to support rss 2.0 and atom at minimum.  Is there any rss 0.9x
+  still out there?
+
+* Probably need to munge feed-supplied dates into valid dateTime by
+  extension.
