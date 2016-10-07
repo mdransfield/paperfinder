@@ -30,6 +30,7 @@ let $item := cts:search(//rss:item, cts:and-query((
 			cts:collection-query("feeds"),
 			cts:element-value-query(xs:QName("rss:link"), $article)
 			)))
+let $store   := xdmp:document-insert($article, $item, $perms, "clicks")
 let $triples := sem:triple(
 	sem:iri($useruri),
 	sem:iri("urn:mdransfield:pf:clicked"),
