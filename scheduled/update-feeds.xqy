@@ -12,7 +12,8 @@ declare variable $perms := (xdmp:permission('pf-user', 'execute'),
 for $f in collection("feeds")
 let $feed := xdmp:node-uri($f)
 let $get := xdmp:http-get($feed,
-	<options xmlns="xdmp:http">
+	<options xmlns="xdmp:document-get">
+	  <format>xml</format>
 	</options>)
   return if ($get[1]/h:response/h:code eq 200) then
            xdmp:document-insert($feed, $get[2], $perms, "feeds")
