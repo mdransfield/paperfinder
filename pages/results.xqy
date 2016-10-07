@@ -27,20 +27,21 @@ declare variable $search   := doc($srchuri)/s:search;
 				cts:element-range-query(xs:QName("dc:date"), ">", xs:dateTime($search/@last-run)))))
       (: Update the last-run timestamp so as not repeatedly show the same results :)
       let $update := xdmp:node-replace($search/@last-run, attribute last-run { current-dateTime() })
-      where $results
-      return 
-	<ol>
-	{
-	  for $i in $results
-		return 
-		  <li class="result">
-		     <div class="article-title"><a href="/click/{xdmp:url-encode($i/rss:link)}" target="_blank">{$i/string(dc:title)}</a></div>
-		     <div class="journal-title">{string($i/../rss:channel/rss:title)}</div>
-		     <div class="authors">{string($i/dc:creator)}</div>
-		     <div class="date">{string($i/dc:date)}</div>
-		  </li>
-	}
-	</ol>
+      return if ($results) then
+		<ol>
+		{
+		  for $i in $results
+			return 
+			  <li class="result">
+			     <div class="article-title"><a href="/click/{xdmp:url-encode($i/rss:link)}" target="_blank">{$i/string(dc:title)}</a></div>
+			     <div class="journal-title">{string($i/../rss:channel/rss:title)}</div>
+			     <div class="authors">{string($i/dc:creator)}</div>
+			     <div class="date">{string($i/dc:date)}</div>
+			  </li>
+		}
+		</ol>
+	     else
+		<p>No new results.</p>
     }
     </section>
   </body>
